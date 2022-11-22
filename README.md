@@ -1,6 +1,6 @@
 # SimGCD: A Simple Parametric Classification Baseline for Generalized Category Discovery
 
-This repo contains code for our paper: [A Simple Parametric Classification Baseline for Generalized Category Discovery](https://arxiv.org/abs/xxxx.xxxxx).
+This repo contains code for our paper: [A Simple Parametric Classification Baseline for Generalized Category Discovery](https://arxiv.org/abs/2211.11727).
 
 ![teaser](assets/teaser.jpg)
 
@@ -68,7 +68,7 @@ If you find this repo useful for your research, please consider citing our paper
 @article{wen2022simgcd,
   title={A Simple Parametric Classification Baseline for Generalized Category Discovery},
   author={Wen, Xin and Zhao, Bingchen and Qi, Xiaojuan},
-  journal={arXiv preprint arXiv:2211.xxxxx},
+  journal={arXiv preprint arXiv:2211.11727},
   year={2022}
 }
 ```
