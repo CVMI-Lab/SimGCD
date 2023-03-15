@@ -138,6 +138,48 @@ def get_imagenet_100_datasets(train_transform, test_transform, train_classes=ran
 
     return all_datasets
 
+
+def get_imagenet_1k_datasets(train_transform, test_transform, train_classes=range(500),
+                           prop_train_labels=0.5, split_train_val=False, seed=0):
+
+    np.random.seed(seed)
+
+    # Init entire training set
+    whole_training_set = ImageNetBase(root=os.path.join(imagenet_root, 'train'), transform=train_transform)
+
+    # Get labelled training set which has subsampled classes, then subsample some indices from that
+    train_dataset_labelled = subsample_classes(deepcopy(whole_training_set), include_classes=train_classes)
+    subsample_indices = subsample_instances(train_dataset_labelled, prop_indices_to_subsample=prop_train_labels)
+    train_dataset_labelled = subsample_dataset(train_dataset_labelled, subsample_indices)
+
+    # Split into training and validation sets
+    train_idxs, val_idxs = get_train_val_indices(train_dataset_labelled)
+    train_dataset_labelled_split = subsample_dataset(deepcopy(train_dataset_labelled), train_idxs)
+    val_dataset_labelled_split = subsample_dataset(deepcopy(train_dataset_labelled), val_idxs)
+    val_dataset_labelled_split.transform = test_transform
+
+    # Get unlabelled data
+    unlabelled_indices = set(whole_training_set.uq_idxs) - set(train_dataset_labelled.uq_idxs)
+    train_dataset_unlabelled = subsample_dataset(deepcopy(whole_training_set), np.array(list(unlabelled_indices)))
+
+    # Get test set for all classes
+    test_dataset = ImageNetBase(root=os.path.join(imagenet_root, 'val'), transform=test_transform)
+
+    # Either split train into train and val or use test set as val
+    train_dataset_labelled = train_dataset_labelled_split if split_train_val else train_dataset_labelled
+    val_dataset_labelled = val_dataset_labelled_split if split_train_val else None
+
+    all_datasets = {
+        'train_labelled': train_dataset_labelled,
+        'train_unlabelled': train_dataset_unlabelled,
+        'val': val_dataset_labelled,
+        'test': test_dataset,
+    }
+
+    return all_datasets
+
+
+
 if __name__ == '__main__':
 
     x = get_imagenet_100_datasets(None, None, split_train_val=False,
