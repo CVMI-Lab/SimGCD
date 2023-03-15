@@ -3,7 +3,7 @@
 set -e
 set -x
 
-CUDA_VISIBLE_DEVICES=0 python -m model.simgcd \
+CUDA_VISIBLE_DEVICES=0 python train.py \
     --dataset_name 'cub' \
     --batch_size 128 \
     --grad_from_block 11 \
