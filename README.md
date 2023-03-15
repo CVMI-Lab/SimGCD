@@ -1,16 +1,15 @@
-# SimGCD: A Simple Parametric Classification Baseline for Generalized Category Discovery
+# Parametric Classification for Generalized Category Discovery: A Baseline Study
 
-This repo contains code for our paper: [A Simple Parametric Classification Baseline for Generalized Category Discovery](https://arxiv.org/abs/2211.11727).
+This repo contains code for our paper: [Parametric Classification for Generalized Category Discovery: A Baseline Study](https://arxiv.org/abs/2211.11727).
 
 ![teaser](assets/teaser.jpg)
 
-Generalized category discovery (GCD) is a problem setting where the goal is to discover novel categories within an unlabelled dataset using the knowledge learned from a set of labelled samples.
-Recent works in GCD argue that a non-parametric classifier formed using semi-supervised $k$-means can outperform strong baselines which use parametric classifiers as it can alleviate the over-fitting to seen categories in the labelled set.
+Generalized Category Discovery (GCD) aims to discover novel categories in unlabelled datasets using knowledge learned from labelled samples.
+Previous studies argued that parametric classifiers are prone to overfitting to seen categories, and endorsed using a non-parametric classifier formed with semi-supervised $k$-means.
 
-In this paper, we revisit the reason that makes previous parametric classifiers fail to recognise new classes for GCD.
-By investigating the design choices of parametric classifiers from the perspective of model architecture, representation learning, and classifier learning, we conclude that the less discriminative representations and unreliable pseudo-labelling strategy are key factors that make parametric classifiers lag behind non-parametric ones. 
-Motivated by our investigation, we present a simple yet effective parametric classification baseline that outperforms the previous best methods by a large margin on multiple popular GCD benchmarks.
-We hope the investigations and the simple baseline can serve as a cornerstone to facilitate future studies.
+However, in this study, we investigate the failure of parametric classifiers, verify the effectiveness of previous design choices when high-quality supervision is available, and identify unreliable pseudo-labels as a key problem. We demonstrate that two prediction biases exist: the classifier tends to predict seen classes more often, and produces an imbalanced distribution across seen and novel categories. 
+Based on these findings, we propose a simple yet effective parametric classification method that benefits from entropy regularisation, achieves state-of-the-art performance on multiple GCD benchmarks and shows strong robustness to unknown class numbers.
+We hope the investigation and proposed simple framework can serve as a strong baseline to facilitate future studies in this field.
 
 ## Running
 
@@ -33,7 +32,7 @@ We use fine-grained benchmarks in this paper, including:
 
 We also use generic object recognition datasets, including:
 
-* [CIFAR-10/100](https://pytorch.org/vision/stable/datasets.html) and [ImageNet](https://image-net.org/download.php)
+* [CIFAR-10/100](https://pytorch.org/vision/stable/datasets.html) and [ImageNet-100/1K](https://image-net.org/download.php)
 
 
 ### Scripts
@@ -52,13 +51,14 @@ Our results in three independent runs:
 
 |    Dataset    	|    All   	|    Old   	|    New   	|
 |:-------------:	|:--------:	|:--------:	|:--------:	|
-|    CIFAR10    	| 93.2±0.4 	| 82.0±1.2 	| 98.9±0.0 	|
-|    CIFAR100   	| 78.1±0.8 	| 77.6±1.5 	| 78.0±2.5 	|
-|  ImageNet-100 	| 82.4±0.9 	| 90.7±0.6 	| 78.3±1.2 	|
+|    CIFAR10    	| 97.1±0.0 	| 95.1±0.1 	| 98.1±0.1 	|
+|    CIFAR100   	| 80.1±0.9 	| 81.2±0.4 	| 77.8±2.0 	|
+|  ImageNet-100 	| 83.0±1.2 	| 93.1±0.2 	| 77.9±1.9 	|
+|  ImageNet-1K  	| 57.1±0.1 	| 77.3±0.1 	| 46.9±0.2 	|
 |      CUB      	| 60.3±0.1 	| 65.6±0.9 	| 57.7±0.4 	|
-| Stanford Cars 	| 46.8±1.8 	| 64.9±1.3 	| 38.0±2.1 	|
-| FGVC-Aircraft 	| 48.8±2.2 	| 51.0±2.2 	| 47.8±2.7 	|
-|  Herbarium 19 	| 43.3±0.3 	| 57.9±0.5 	| 35.3±0.2 	|
+| Stanford Cars 	| 53.8±2.2 	| 71.9±1.7 	| 45.0±2.4 	|
+| FGVC-Aircraft 	| 54.2±1.9 	| 59.1±1.2 	| 51.8±2.3 	|
+|  Herbarium 19 	| 44.0±0.4 	| 58.0±0.4 	| 36.4±0.8 	|
 
 ## Citing this work
 
@@ -66,7 +66,7 @@ If you find this repo useful for your research, please consider citing our paper
 
 ```
 @article{wen2022simgcd,
-  title={A Simple Parametric Classification Baseline for Generalized Category Discovery},
+  title={Parametric Classification for Generalized Category Discovery: A Baseline Study},
   author={Wen, Xin and Zhao, Bingchen and Qi, Xiaojuan},
   journal={arXiv preprint arXiv:2211.11727},
   year={2022}
