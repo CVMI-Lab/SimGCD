@@ -40,7 +40,7 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
                     )
 
     # inductive
-    best_test_acc_ubl = 0
+    best_test_acc_lab = 0
     # transductive
     best_train_acc_lab = 0
     best_train_acc_ubl = 0 
@@ -130,7 +130,7 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
         torch.save(save_dict, args.model_path)
         args.logger.info("model saved to {}.".format(args.model_path))
 
-        if new_acc_test > best_test_acc_ubl:
+        if old_acc_test > best_test_acc_lab:
 
             args.logger.info(f'Best ACC on old Classes on disjoint test set: {old_acc_test:.4f}...')
             args.logger.info('Best Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
@@ -139,7 +139,7 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
             args.logger.info("model saved to {}.".format(args.model_path[:-3] + f'_best.pt'))
 
             # inductive
-            best_test_acc_ubl = new_acc_test
+            best_test_acc_lab = old_acc_test
             # transductive            
             best_train_acc_lab = old_acc
             best_train_acc_ubl = new_acc
