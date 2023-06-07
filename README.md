@@ -43,8 +43,10 @@ We also use generic object recognition datasets, including:
 bash scripts/run_${DATASET_NAME}.sh
 ```
 
-Then check the results starting with `Metrics with best model on test set:` in the logs.
-This means the model is picked according to its performance on the test set, and then evaluated on the unlabelled instances of the train set.
+~~Then check the results starting with `Metrics with best model on test set:` in the logs.
+This means the model is picked according to its performance on the test set, and then evaluated on the unlabelled instances of the train set.~~
+
+We found picking the model according to 'Old' class performance could lead to possible over-fitting, and since 'New' class labels on the held-out validation set should be assumed unavailable, we suggest not to perform model selection, and simply use the last-epoch model.
 
 ## Results
 Our results in three independent runs:

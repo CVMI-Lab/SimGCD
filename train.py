@@ -39,12 +39,12 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
                         args.teacher_temp,
                     )
 
-    # inductive
-    best_test_acc_lab = 0
-    # transductive
-    best_train_acc_lab = 0
-    best_train_acc_ubl = 0 
-    best_train_acc_all = 0
+    # # inductive
+    # best_test_acc_lab = 0
+    # # transductive
+    # best_train_acc_lab = 0
+    # best_train_acc_ubl = 0 
+    # best_train_acc_all = 0
 
     for epoch in range(args.epochs):
         loss_record = AverageMeter()
@@ -111,12 +111,12 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
 
         args.logger.info('Testing on unlabelled examples in the training data...')
         all_acc, old_acc, new_acc = test(student, unlabelled_train_loader, epoch=epoch, save_name='Train ACC Unlabelled', args=args)
-        args.logger.info('Testing on disjoint test set...')
-        all_acc_test, old_acc_test, new_acc_test = test(student, test_loader, epoch=epoch, save_name='Test ACC', args=args)
+        # args.logger.info('Testing on disjoint test set...')
+        # all_acc_test, old_acc_test, new_acc_test = test(student, test_loader, epoch=epoch, save_name='Test ACC', args=args)
 
 
         args.logger.info('Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
-        args.logger.info('Test Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc_test, old_acc_test, new_acc_test))
+        # args.logger.info('Test Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc_test, old_acc_test, new_acc_test))
 
         # Step schedule
         exp_lr_scheduler.step()
@@ -130,23 +130,23 @@ def train(student, train_loader, test_loader, unlabelled_train_loader, args):
         torch.save(save_dict, args.model_path)
         args.logger.info("model saved to {}.".format(args.model_path))
 
-        if old_acc_test > best_test_acc_lab:
-
-            args.logger.info(f'Best ACC on old Classes on disjoint test set: {old_acc_test:.4f}...')
-            args.logger.info('Best Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
-
-            torch.save(save_dict, args.model_path[:-3] + f'_best.pt')
-            args.logger.info("model saved to {}.".format(args.model_path[:-3] + f'_best.pt'))
-
-            # inductive
-            best_test_acc_lab = old_acc_test
-            # transductive            
-            best_train_acc_lab = old_acc
-            best_train_acc_ubl = new_acc
-            best_train_acc_all = all_acc
-
-        args.logger.info(f'Exp Name: {args.exp_name}')
-        args.logger.info(f'Metrics with best model on test set: All: {best_train_acc_all:.4f} Old: {best_train_acc_lab:.4f} New: {best_train_acc_ubl:.4f}')
+        # if old_acc_test > best_test_acc_lab:
+        #     
+        #     args.logger.info(f'Best ACC on old Classes on disjoint test set: {old_acc_test:.4f}...')
+        #     args.logger.info('Best Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
+        #     
+        #     torch.save(save_dict, args.model_path[:-3] + f'_best.pt')
+        #     args.logger.info("model saved to {}.".format(args.model_path[:-3] + f'_best.pt'))
+        #     
+        #     # inductive
+        #     best_test_acc_lab = old_acc_test
+        #     # transductive            
+        #     best_train_acc_lab = old_acc
+        #     best_train_acc_ubl = new_acc
+        #     best_train_acc_all = all_acc
+        # 
+        # args.logger.info(f'Exp Name: {args.exp_name}')
+        # args.logger.info(f'Metrics with best model on test set: All: {best_train_acc_all:.4f} Old: {best_train_acc_lab:.4f} New: {best_train_acc_ubl:.4f}')
 
 
 def test(model, test_loader, epoch, save_name, args):
@@ -283,8 +283,8 @@ if __name__ == "__main__":
                               sampler=sampler, drop_last=True, pin_memory=True)
     test_loader_unlabelled = DataLoader(unlabelled_train_examples_test, num_workers=args.num_workers,
                                         batch_size=256, shuffle=False, pin_memory=False)
-    test_loader_labelled = DataLoader(test_dataset, num_workers=args.num_workers,
-                                      batch_size=256, shuffle=False, pin_memory=False)
+    # test_loader_labelled = DataLoader(test_dataset, num_workers=args.num_workers,
+    #                                   batch_size=256, shuffle=False, pin_memory=False)
 
     # ----------------------
     # PROJECTION HEAD
@@ -295,4 +295,5 @@ if __name__ == "__main__":
     # ----------------------
     # TRAIN
     # ----------------------
-    train(model, train_loader, test_loader_labelled, test_loader_unlabelled, args)
+    # train(model, train_loader, test_loader_labelled, test_loader_unlabelled, args)
+    train(model, train_loader, None, test_loader_unlabelled, args)

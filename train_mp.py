@@ -125,7 +125,7 @@ def main(args):
     sample_weights = torch.DoubleTensor(sample_weights)
     train_sampler = DistributedWeightedSampler(train_dataset, sample_weights, num_samples=len(train_dataset))
     unlabelled_train_sampler = torch.utils.data.distributed.DistributedSampler(unlabelled_train_examples_test)
-    test_sampler = torch.utils.data.distributed.DistributedSampler(test_dataset)
+    # test_sampler = torch.utils.data.distributed.DistributedSampler(test_dataset)
     # --------------------
     # DATALOADERS
     # --------------------
@@ -133,8 +133,8 @@ def main(args):
                               sampler=train_sampler, drop_last=True, pin_memory=True)
     unlabelled_train_loader = DataLoader(unlabelled_train_examples_test, num_workers=args.num_workers, batch_size=256, 
                                         shuffle=False, sampler=unlabelled_train_sampler, pin_memory=False)
-    test_loader = DataLoader(test_dataset, num_workers=args.num_workers, batch_size=256, 
-                                      shuffle=False, sampler=test_sampler, pin_memory=False)
+    # test_loader = DataLoader(test_dataset, num_workers=args.num_workers, batch_size=256, 
+    #                                   shuffle=False, sampler=test_sampler, pin_memory=False)
 
     # ----------------------
     # PROJECTION HEAD
@@ -169,29 +169,29 @@ def main(args):
                         args.teacher_temp,
                     )
 
-    # inductive
-    best_test_acc_lab = 0
-    # transductive
-    best_train_acc_lab = 0
-    best_train_acc_ubl = 0 
-    best_train_acc_all = 0
+    # # inductive
+    # best_test_acc_lab = 0
+    # # transductive
+    # best_train_acc_lab = 0
+    # best_train_acc_ubl = 0 
+    # best_train_acc_all = 0
 
     for epoch in range(args.epochs):
         train_sampler.set_epoch(epoch)
         train(model, train_loader, optimizer, fp16_scaler, exp_lr_scheduler, cluster_criterion, epoch, args)
 
         unlabelled_train_sampler.set_epoch(epoch)
-        test_sampler.set_epoch(epoch)
+        # test_sampler.set_epoch(epoch)
         if dist.get_rank() == 0:
             args.logger.info('Testing on unlabelled examples in the training data...')
         all_acc, old_acc, new_acc = test(model, unlabelled_train_loader, epoch=epoch, save_name='Train ACC Unlabelled', args=args)
-        if dist.get_rank() == 0:    
-            args.logger.info('Testing on disjoint test set...')
-        all_acc_test, old_acc_test, new_acc_test = test(model, test_loader, epoch=epoch, save_name='Test ACC', args=args)
+        # if dist.get_rank() == 0:    
+        #     args.logger.info('Testing on disjoint test set...')
+        # all_acc_test, old_acc_test, new_acc_test = test(model, test_loader, epoch=epoch, save_name='Test ACC', args=args)
         
         if dist.get_rank() == 0:
             args.logger.info('Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
-            args.logger.info('Test Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc_test, old_acc_test, new_acc_test))
+            # args.logger.info('Test Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc_test, old_acc_test, new_acc_test))
 
             save_dict = {
                 'model': model.state_dict(),
@@ -202,23 +202,23 @@ def main(args):
             torch.save(save_dict, args.model_path)
             args.logger.info("model saved to {}.".format(args.model_path))
 
-            if old_acc_test > best_test_acc_lab and dist.get_rank() == 0:
-                args.logger.info(f'Best ACC on old Classes on disjoint test set: {old_acc_test:.4f}...')
-                args.logger.info('Best Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
-
-                torch.save(save_dict, args.model_path[:-3] + f'_best.pt')
-                args.logger.info("model saved to {}.".format(args.model_path[:-3] + f'_best.pt'))
-
-                # inductive
-                best_test_acc_lab = old_acc_test
-                # transductive            
-                best_train_acc_lab = old_acc
-                best_train_acc_ubl = new_acc
-                best_train_acc_all = all_acc
-            
-            if dist.get_rank() == 0:
-                args.logger.info(f'Exp Name: {args.exp_name}')
-                args.logger.info(f'Metrics with best model on test set: All: {best_train_acc_all:.4f} Old: {best_train_acc_lab:.4f} New: {best_train_acc_ubl:.4f}')
+            # if old_acc_test > best_test_acc_lab and dist.get_rank() == 0:
+            #     args.logger.info(f'Best ACC on old Classes on disjoint test set: {old_acc_test:.4f}...')
+            #     args.logger.info('Best Train Accuracies: All {:.4f} | Old {:.4f} | New {:.4f}'.format(all_acc, old_acc, new_acc))
+            # 
+            #     torch.save(save_dict, args.model_path[:-3] + f'_best.pt')
+            #     args.logger.info("model saved to {}.".format(args.model_path[:-3] + f'_best.pt'))
+            # 
+            #     # inductive
+            #     best_test_acc_lab = old_acc_test
+            #     # transductive            
+            #     best_train_acc_lab = old_acc
+            #     best_train_acc_ubl = new_acc
+            #     best_train_acc_all = all_acc
+            # 
+            # if dist.get_rank() == 0:
+            #     args.logger.info(f'Exp Name: {args.exp_name}')
+            #     args.logger.info(f'Metrics with best model on test set: All: {best_train_acc_all:.4f} Old: {best_train_acc_lab:.4f} New: {best_train_acc_ubl:.4f}')
 
 
 def train(student, train_loader, optimizer, scaler, scheduler, cluster_criterion, epoch, args):
