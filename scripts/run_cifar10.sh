@@ -3,9 +3,9 @@
 set -e
 set -x
 
-CUDA_VISIBLE_DEVICES=0 python train.py \
+CUDA_VISIBLE_DEVICES=1 python train.py \
     --dataset_name 'cifar10' \
-    --batch_size 128 \
+    --batch_size 256 \
     --grad_from_block 11 \
     --epochs 200 \
     --num_workers 8 \

@@ -1,8 +1,8 @@
 # -----------------
 # DATASET ROOTS
 # -----------------
-cifar_10_root = '${DATASET_DIR}/cifar10'
-cifar_100_root = '${DATASET_DIR}/cifar100'
+cifar_10_root = '/alto/shared/DataSets/vision_benchmarks/'
+cifar_100_root = '/alto/shared/DataSets/vision_benchmarks/'
 cub_root = '${DATASET_DIR}/cub'
 aircraft_root = '${DATASET_DIR}/fgvc-aircraft-2013b'
 car_root = '${DATASET_DIR}/cars'
@@ -15,4 +15,4 @@ osr_split_dir = 'data/ssb_splits'
 # -----------------
 # OTHER PATHS
 # -----------------
-exp_root = 'dev_outputs' # All logs and checkpoints will be saved here
+exp_root = 'dev_outputs_mp' # All logs and checkpoints will be saved here

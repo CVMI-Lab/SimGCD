@@ -60,9 +60,11 @@ def get_parser():
     args.num_labeled_classes = len(args.train_classes)
     args.num_unlabeled_classes = len(args.unlabeled_classes)
 
+
     if os.environ["LOCAL_RANK"] is not None:
         args.local_rank = int(os.environ["LOCAL_RANK"])
-    
+        print(args.local_rank)
+
     return args
 
 
@@ -258,13 +260,13 @@ def train(student, train_loader, optimizer, scaler, scheduler, cluster_criterion
             sup_con_loss = SupConLoss()(student_proj, labels=sup_con_labels)
 
             pstr = ''
-            pstr += f'cls_loss: {cls_loss.item():.4f} '
-            pstr += f'cluster_loss: {cluster_loss.item():.4f} '
+            # pstr += f'cls_loss: {cls_loss.item():.4f} '
+            # pstr += f'cluster_loss: {cluster_loss.item():.4f} '
             pstr += f'sup_con_loss: {sup_con_loss.item():.4f} '
             pstr += f'contrastive_loss: {contrastive_loss.item():.4f} '
 
             loss = 0
-            loss += (1 - args.sup_weight) * cluster_loss + args.sup_weight * cls_loss
+            loss += 0*((1 - args.sup_weight) * cluster_loss + args.sup_weight * cls_loss)
             loss += (1 - args.sup_weight) * contrastive_loss + args.sup_weight * sup_con_loss
                 
         # Train acc

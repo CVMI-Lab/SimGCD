@@ -1,14 +1,16 @@
 #!/bin/bash
-
+# bash scripts/run_cifar100.sh 
 set -e
 set -x
 
-CUDA_VISIBLE_DEVICES=0 python train.py \
+#export CUDA_VISIBLE_DEVICES=2,3,4,5,6 
+
+torchrun train_mp.py \
     --dataset_name 'cifar100' \
-    --batch_size 128 \
+    --batch_size 256 \
     --grad_from_block 11 \
     --epochs 200 \
-    --num_workers 8 \
+   --num_workers 8 \
     --use_ssb_splits \
     --sup_weight 0.35 \
     --weight_decay 5e-5 \

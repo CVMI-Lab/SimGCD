@@ -36,6 +36,8 @@ class DINOHead(nn.Module):
 
     def forward(self, x):
         x_proj = self.mlp(x)
+
+        #for clustering
         x = nn.functional.normalize(x, dim=-1, p=2)
         # x = x.detach()
         logits = self.last_layer(x)
