@@ -1,8 +1,8 @@
 # -----------------
 # DATASET ROOTS
 # -----------------
-cifar_10_root = '/alto/shared/DataSets/vision_benchmarks/'
-cifar_100_root = '/alto/shared/DataSets/vision_benchmarks/'
+cifar_10_root = '/export/shared/DataSets/'
+cifar_100_root = '/export/shared/DataSets/'
 cub_root = '${DATASET_DIR}/cub'
 aircraft_root = '${DATASET_DIR}/fgvc-aircraft-2013b'
 car_root = '${DATASET_DIR}/cars'
